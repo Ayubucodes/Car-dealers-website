@@ -1,0 +1,40 @@
+.section-title {
+  margin-bottom: 50px;
+}
+
+.section-title.text-center {
+  text-align: center;
+}
+
+.subtitle {
+  color: var(--primary-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.section-title h2 {
+  font-size: 36px;
+  text-transform: capitalize;
+  margin-bottom: 15px;
+}
+
+.title-divider {
+  width: 60px;
+  height: 3px;
+  background-color: var(--primary-color);
+  margin: 0 auto;
+}
+
+.section-title:not(.text-center) .title-divider {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .section-title h2 {
+    font-size: 28px;
+  }
+}
