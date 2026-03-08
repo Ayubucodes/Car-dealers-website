@@ -70,56 +70,8 @@
 
 .hero-content p {
   font-size: 18px;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
   color: var(--white);
-}
-
-.hero-cta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  line-height: 1;
-}
-
-.hero-cta-text {
-  color: var(--white);
-  font-size: 15px;
-  font-weight: 400;
-}
-
-.hero-cta-link {
-  color: var(--primary-color);
-  font-weight: 400;
-  font-size: 15px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.hero-cta-link:hover {
-  color: var(--primary-color);
-}
-
-.hero-cta-icon {
-  width: 18px;
-  height: 18px;
-  border-radius: 60%;
-  background: var(--primary-color);
-  display: inline-block;
-  position: relative;
-  transform: translateY(1px);
-}
-
-.hero-cta-icon::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 5px;
-  height: 5px;
-  border-top: 2px solid #fff;
-  border-right: 2px solid #fff;
-  transform: translate(-60%, -50%) rotate(45deg);
 }
 
 .hero-search-box {

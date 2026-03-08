@@ -96,6 +96,7 @@ export async function fetchCarsPage({
   model_id,
   year,
   body_style,
+  mileage_range,
 } = {}) {
   const params = new URLSearchParams();
 
@@ -110,6 +111,7 @@ export async function fetchCarsPage({
   if (model_id != null && String(model_id).trim() !== '') params.set('model_id', String(model_id));
   if (year != null && String(year).trim() !== '') params.set('year', String(year));
   if (body_style) params.set('body_style', body_style);
+  if (mileage_range) params.set('mileage_range', mileage_range);
 
   const url = params.toString() ? `${CARS_FILTER_ENDPOINT}?${params.toString()}` : CARS_FILTER_ENDPOINT;
   const res = await fetchJson(url);
@@ -181,7 +183,7 @@ export async function fetchCarsMeta({ make_id, model_id } = {}) {
 
   const url = params.toString() ? `${CARS_META_ENDPOINT}?${params.toString()}` : CARS_META_ENDPOINT;
   const res = await fetchJson(url);
-  return res?.data || { makes: [], models: [], years: [], body_styles: [] };
+  return res?.data || { makes: [], models: [], years: [], mileage_ranges: [] };
 }
 
 export async function fetchMakeCount(makeId) {
@@ -211,8 +213,16 @@ export async function fetchCarsUi() {
 }
 
 export async function fetchCarByUuid(uuid) {
-  const list = await fetchCars();
-  return list.find((c) => c?.uuid === uuid) || null;
+  let page = 1;
+  const per_page = 100;
+  while (true) {
+    const res = await fetchCarsPage({ page, per_page });
+    const found = res.data.find((c) => c?.uuid === uuid);
+    if (found) return found;
+    if (page >= res.meta.last_page) break;
+    page++;
+  }
+  return null;
 }
 
 // Auth helpers

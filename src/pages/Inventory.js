@@ -10,7 +10,7 @@ const Inventory = () => {
   const { bodyStyle: routeBodyStyle, makeId: routeMakeId } = useParams();
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState('');
-  const [maxPrice, setMaxPrice] = useState(50000000);
+  const [maxPrice, setMaxPrice] = useState(500000000);
   const [condition, setCondition] = useState('');
   const [sort, setSort] = useState('newest');
   const [page, setPage] = useState(1);
@@ -19,6 +19,7 @@ const Inventory = () => {
   const [modelId, setModelId] = useState('');
   const [year, setYear] = useState('');
   const [bodyStyle, setBodyStyle] = useState('');
+  const [mileageRange, setMileageRange] = useState('');
   const [viewMode, setViewMode] = useState(localStorage.getItem('inventory_view_mode') || 'grid');
   const [cars, setCars] = useState([]);
   const [meta, setMeta] = useState(null);
@@ -33,14 +34,14 @@ const Inventory = () => {
     const nextMakeId = searchParams.get('make_id') || '';
     const nextModelId = searchParams.get('model_id') || '';
     const nextYear = searchParams.get('year') || '';
-    const nextBodyStyle = searchParams.get('body_style') || '';
+    const nextMileageRange = searchParams.get('mileage_range') || '';
     const nextPerPageRaw = searchParams.get('per_page');
     const nextPageRaw = searchParams.get('page');
 
     setMakeId(nextMakeId);
     setModelId(nextModelId);
     setYear(nextYear);
-    setBodyStyle(nextBodyStyle);
+    setMileageRange(nextMileageRange);
     if (nextPerPageRaw) setPerPage(Number(nextPerPageRaw) || 10);
     if (nextPageRaw) setPage(Number(nextPageRaw) || 1);
   }, [searchParams]);
@@ -61,6 +62,14 @@ const Inventory = () => {
         const effectiveMakeId = routeMakeId ? String(routeMakeId) : makeId;
         const effectiveBodyStyle = routeBodyStyle ? String(routeBodyStyle) : bodyStyle;
 
+        if (effectiveMakeId === '0') {
+          if (!cancelled) {
+            setCars([]);
+            setMeta({ total: 0, last_page: 1 });
+          }
+          return;
+        }
+
         const res = await fetchCarsUiPage({
           q: query,
           min_price: 0,
@@ -73,6 +82,7 @@ const Inventory = () => {
           model_id: modelId || undefined,
           year: year || undefined,
           body_style: effectiveBodyStyle || undefined,
+          mileage_range: mileageRange || undefined,
         });
 
         let sortedCars = [...res.data];
@@ -116,6 +126,7 @@ const Inventory = () => {
     modelId,
     year,
     bodyStyle,
+    mileageRange,
     routeBodyStyle,
     routeMakeId,
   ]);

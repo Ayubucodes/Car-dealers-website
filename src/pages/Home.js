@@ -170,12 +170,12 @@ const Home = () => {
 
   const [metaLoading, setMetaLoading] = useState(true);
   const [metaError, setMetaError] = useState('');
-  const [meta, setMeta] = useState({ makes: [], models: [], years: [], body_styles: [] });
+  const [meta, setMeta] = useState({ makes: [], models: [], years: [], mileage_ranges: [] });
 
   const [makeId, setMakeId] = useState('');
   const [modelId, setModelId] = useState('');
   const [year, setYear] = useState('');
-  const [bodyStyle, setBodyStyle] = useState('');
+  const [mileageRange, setMileageRange] = useState('');
 
   // Load cached counts on mount
   const cachedMakeCounts = (() => {
@@ -225,7 +225,7 @@ const Home = () => {
     }
 
     const params = new URLSearchParams();
-    params.set('q', name);
+    params.set('make_id', '0');
     params.set('page', '1');
     params.set('per_page', '10');
     navigate(`/inventory?${params.toString()}`);
@@ -244,7 +244,7 @@ const Home = () => {
     if (makeId) params.set('make_id', makeId);
     if (modelId) params.set('model_id', modelId);
     if (year) params.set('year', year);
-    if (bodyStyle) params.set('body_style', bodyStyle);
+    if (mileageRange) params.set('mileage_range', mileageRange);
     params.set('page', '1');
     params.set('per_page', '10');
 
@@ -397,7 +397,7 @@ const Home = () => {
   return (
     <div className="home-page">
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero">to
         <div className="hero-overlay"></div>
         <div className="container">
           <div className="hero-content">
@@ -408,16 +408,14 @@ const Home = () => {
                 <span className="hero-subtitle-bar" aria-hidden="true"></span>
                 <span>Over 4000 Latest Cars In Cardealer</span>
               </div>
-              <p>Car Dealer is the most enticing, creative, modern and multipurpose   auto dealer<br />
-                Premium  Theme. Suitable for any car dealer websites, <br />
-                business or corporate websites.</p>
-              <div className="hero-cta">
+              <p>CarDealer is a modern and reliable car dealer website showcasing a wide range of quality vehicles. It allows customers to explore detailed car listings, view specifications, and make informed decisions with confidence.</p>
+              {/* <div className="hero-cta">
                 <span className="hero-cta-text">Want to learn more about us?</span>
                 <a className="hero-cta-link" href="/about">
                   Click here
                   <span className="hero-cta-icon" aria-hidden="true"></span>
                 </a>
-              </div>
+              </div> */}
             </div>
 
             <form onSubmit={handleSearch}>
@@ -432,7 +430,7 @@ const Home = () => {
                         setMakeId(v);
                         setModelId('');
                         setYear('');
-                        setBodyStyle('');
+                        setMileageRange('');
                       }}
                       options={meta.makes}
                       placeholder="Select Make"
@@ -448,7 +446,7 @@ const Home = () => {
                       onChange={(v) => {
                         setModelId(v);
                         setYear('');
-                        setBodyStyle('');
+                        setMileageRange('');
                       }}
                       options={meta.models}
                       placeholder="Select Model"
@@ -463,7 +461,7 @@ const Home = () => {
                       value={year}
                       onChange={(v) => {
                         setYear(v);
-                        setBodyStyle('');
+                        setMileageRange('');
                       }}
                       options={meta.years.map((y) => ({ value: String(y), label: String(y) }))}
                       placeholder="Select Year"
@@ -475,10 +473,10 @@ const Home = () => {
                   <div className="search-field">
 
                     <SearchableSelect
-                      value={bodyStyle}
-                      onChange={(v) => setBodyStyle(v)}
-                      options={meta.body_styles.map((b) => ({ value: String(b), label: String(b) }))}
-                      placeholder="Select Body Style"
+                      value={mileageRange}
+                      onChange={(v) => setMileageRange(v)}
+                      options={(meta.mileage_ranges || []).map((r) => ({ value: String(r), label: String(r) }))}
+                      placeholder="Select Mileage Range"
                       disabled={metaLoading || !year}
                       getOptionValue={(o) => o.value}
                       getOptionLabel={(o) => o.label}
@@ -597,7 +595,7 @@ const Home = () => {
                   <span className="brand-count">{makeCounts.volkswagen != null ? makeCounts.volkswagen.toLocaleString() : (countsLoading ? '' : '0')}</span>
                 </div>
               </div>
-              <div className="brand-card" data-make="Bmw" role="button" tabIndex={0}>
+              <div className="brand-card" data-make="BMW" role="button" tabIndex={0}>
                 <div className="brand-logo-container">
                   <img src="images/bmw.png" alt="Bmw" />
                 </div>
@@ -624,7 +622,7 @@ const Home = () => {
                   <span className="brand-count">{makeCounts.lexus != null ? makeCounts.lexus.toLocaleString() : (countsLoading ? '' : '0')}</span>
                 </div>
               </div>
-              <div className="brand-card" data-make="Mercedes" role="button" tabIndex={0}>
+              <div className="brand-card" data-make="Mercedes-Benz" role="button" tabIndex={0}>
                 <div className="brand-logo-container">
                   <img src="images/mercedes.png" alt="Mercedes" />
                 </div>
@@ -642,7 +640,7 @@ const Home = () => {
                   <span className="brand-count">{makeCounts.mitsubishi != null ? makeCounts.mitsubishi.toLocaleString() : (countsLoading ? '' : '0')}</span>
                 </div>
               </div>
-              <div className="brand-card" data-make="volvo" role="button" tabIndex={0}>
+              <div className="brand-card" data-make="Volvo" role="button" tabIndex={0}>
                 <div className="brand-logo-container">
                   <img src="images/volvo.png" alt="Volvo" />
                 </div>
@@ -651,7 +649,7 @@ const Home = () => {
                   <span className="brand-count">{makeCounts.volvo != null ? makeCounts.volvo.toLocaleString() : (countsLoading ? '' : '0')}</span>
                 </div>
               </div>
-              <div className="brand-card" data-make="landrover" role="button" tabIndex={0}>
+              <div className="brand-card" data-make="Land Rover" role="button" tabIndex={0}>
                 <div className="brand-logo-container">
                   <img src="images/landrover.png" alt="Land Rover" />
                 </div>
@@ -678,7 +676,7 @@ const Home = () => {
                   <span className="brand-count">{makeCounts.peugeot != null ? makeCounts.peugeot.toLocaleString() : (countsLoading ? '' : '0')}</span>
                 </div>
               </div>
-              <div className="brand-card" data-make="jeep" role="button" tabIndex={0}>
+              <div className="brand-card" data-make="Jeep" role="button" tabIndex={0}>
                 <div className="brand-logo-container">
                   <img src="images/jeep.png" alt="Jeep" />
                 </div>
@@ -714,7 +712,7 @@ const Home = () => {
                   <span className="brand-count">{makeCounts.hyundai != null ? makeCounts.hyundai.toLocaleString() : (countsLoading ? '' : '0')}</span>
                 </div>
               </div>
-              <div className="brand-card" data-make="kia" role="button" tabIndex={0}>
+              <div className="brand-card" data-make="Kia" role="button" tabIndex={0}>
                 <div className="brand-logo-container">
                   <img src="images/kia.png" alt="Kia" />
                 </div>
@@ -856,7 +854,7 @@ const Home = () => {
             {!featuredLoading && featuredError && (
               <div className="results-count">{featuredError}</div>
             )}
-            {!featuredLoading && !featuredError && featuredCars.map((car) => (
+            {!featuredLoading && !featuredError && featuredCars.slice(0, 8).map((car) => (
               <CarCard key={car.uuid || car.id} car={car} />
             ))}
           </div>
