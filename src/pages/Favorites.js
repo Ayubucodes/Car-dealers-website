@@ -34,7 +34,13 @@ const Favorites = () => {
           setMeta(res?.meta || null);
         }
       } catch (e) {
-        if (!cancelled) setError(e?.message || 'Failed to load favorites');
+        if (!cancelled) {
+          if (e?.response?.status === 401 || (e?.message && e.message.toLowerCase().includes('login'))) {
+            setError('Please log in to view your favorites.');
+          } else {
+            setError('Please check your connection and try again.');
+          }
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -52,7 +58,7 @@ const Favorites = () => {
 
   return (
     <div className="inventory-page">
-   <div className="detail-header-bg">
+      <div className="detail-header-bg">
       </div>
 
       <div className="section-padding">
@@ -79,7 +85,24 @@ const Favorites = () => {
                     <Spinner />
                   </div>
                 )}
-                {!loading && error && <div className="results-count">{error}</div>}
+                {!loading && error && (
+                  <div
+                    className="results-count"
+                    style={{
+                      gridColumn: '1 / -1',
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: 16,
+                      padding: '140px 0',
+                    }}
+                  >
+                    <img src="/images/empty.png" alt="No data available" style={{ maxWidth: '200px', opacity: 0.7 }} />
+                    <span>{error}</span>
+                  </div>
+                )}
                 {!loading && !error && cars.length === 0 && (
                   <div
                     className="results-count"
@@ -87,13 +110,14 @@ const Favorites = () => {
                       gridColumn: '1 / -1',
                       width: '100%',
                       display: 'flex',
+                      flexDirection: 'column',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      gap: 8,
+                      gap: 16,
                       padding: '140px 0',
                     }}
                   >
-                    <Inbox size={18} />
+                    <img src="/images/empty.png" alt="No favorites yet" style={{ maxWidth: '200px', opacity: 0.7 }} />
                     <span>No favorites yet</span>
                   </div>
                 )}

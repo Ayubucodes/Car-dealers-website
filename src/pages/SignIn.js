@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { login } from '../api/cars';
 import '../styles/Auth.css';
 
@@ -34,7 +34,7 @@ const SignIn = () => {
       localStorage.setItem('auth_user', JSON.stringify(response.user));
       window.location.href = '/';
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.');
+      setError(err.message === 'Failed to fetch' ? 'Please check your connection and try again.' : (err.message || 'Login failed. Please try again.'));
     } finally {
       setIsSubmitting(false);
     }

@@ -37,7 +37,7 @@ const SignUp = () => {
       localStorage.setItem('auth_user', JSON.stringify(response.user));
       window.location.href = '/';
     } catch (err) {
-      setError(err.message || 'Registration failed. Please try again.');
+      setError(err.message === 'Failed to fetch' ? 'Please check your connection and try again.' : (err.message || 'Registration failed. Please try again.'));
     } finally {
       setIsSubmitting(false);
     }

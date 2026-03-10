@@ -24,7 +24,7 @@ const Team = () => {
         }
       } catch (e) {
         if (!cancelled) {
-          setError(e?.message || 'Failed to load team members');
+          setError('Please check your connection and try again.');
         }
       } finally {
         if (!cancelled) {
@@ -60,7 +60,20 @@ const Team = () => {
             <Spinner />
           ) : null}
           {!loading && error ? (
-            <div className="results-count">{error}</div>
+            <div
+              className="results-count"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: 16,
+                padding: '140px 0',
+              }}
+            >
+              <img src="/images/empty.png" alt="No data available" style={{ maxWidth: '200px', opacity: 0.7 }} />
+              <span>{error}</span>
+            </div>
           ) : null}
           <div className="team-grid">
             {!loading && !error && members.map((member) => (

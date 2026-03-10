@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Search, Grid, List as ListIcon, Inbox } from 'lucide-react';
+import { Search, Grid, List as ListIcon } from 'lucide-react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import CarCard from '../components/CarCard';
 import { fetchCarsUiPage } from '../api/cars';
@@ -105,7 +105,7 @@ const Inventory = () => {
           setMeta(res.meta);
         }
       } catch (e) {
-        if (!cancelled) setError(e?.message || 'Failed to load cars');
+        if (!cancelled) setError('Please check your connection and try again.');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -259,7 +259,22 @@ const Inventory = () => {
                   </div>
                 )}
                 {!loading && error && (
-                  <div className="results-count">{error}</div>
+                  <div
+                    className="results-count"
+                    style={{
+                      gridColumn: '1 / -1',
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: 16,
+                      padding: '140px 0',
+                    }}
+                  >
+                    <img src="/images/empty.png" alt="Please check your connection and try again." style={{ maxWidth: '200px', opacity: 0.7 }} />
+                    <span>{error}</span>
+                  </div>
                 )}
                 {!loading && !error && cars.length === 0 && (
                   <div
@@ -268,14 +283,15 @@ const Inventory = () => {
                       gridColumn: '1 / -1',
                       width: '100%',
                       display: 'flex',
+                      flexDirection: 'column',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      gap: 8,
+                      gap: 16,
                       padding: '140px 0',
                     }}
                   >
-                    <Inbox size={18} />
-                    <span>No data available</span>
+                    <img src="/images/empty.png" alt="No cars found" style={{ maxWidth: '200px', opacity: 0.7 }} />
+                    <span>No cars found</span>
                   </div>
                 )}
                 {!loading && !error && cars.map((car) => (

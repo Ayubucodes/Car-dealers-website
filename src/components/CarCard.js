@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Gauge, Fuel, Zap } from 'lucide-react';
+import { Calendar, Gauge, Fuel, Zap, Car } from 'lucide-react';
 import '../styles/CarCard.css';
 
 const CarCard = ({ car, viewMode = 'grid' }) => {
   const carIdentifier = car?.uuid || car?.id;
+  const [imageError, setImageError] = useState(false);
   if (viewMode === 'list') {
     return (
       <Link to={`/inventory/${carIdentifier}`} className="car-card car-card-list">
         <div className="car-list-content">
           <div className="car-list-image">
-            <img src={car.image} alt={car.name} />
+            {imageError ? (
+              <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f9fa' }}>
+                <Car size={80} style={{ color: '#6c757d' }} />
+              </div>
+            ) : (
+              <img src={car.image} alt={car.name} onError={() => setImageError(true)} />
+            )}
             <div className="car-badge">{car.condition}</div>
           </div>
           <div className="car-list-details">
@@ -35,7 +42,13 @@ const CarCard = ({ car, viewMode = 'grid' }) => {
   return (
     <Link to={`/inventory/${carIdentifier}`} className="car-card">
       <div className="car-image">
-        <img src={car.image} alt={car.name} />
+        {imageError ? (
+          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
+            <Car size={80} style={{ color: '#6c757d' }} />
+          </div>
+        ) : (
+          <img src={car.image} alt={car.name} onError={() => setImageError(true)} />
+        )}
         <div className="car-badge">{car.condition}</div>
         <div className="car-price">Tshs {car.price ? car.price.toLocaleString() : '0'}</div>
       </div>

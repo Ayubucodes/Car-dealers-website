@@ -382,7 +382,7 @@ const Home = () => {
         const uiCars = list.map(mapApiCarToUiCar);
         if (!cancelled) setFeaturedCars(uiCars);
       } catch (e) {
-        if (!cancelled) setFeaturedError(e?.message || 'Failed to load featured cars');
+        if (!cancelled) setFeaturedError('Please check your connection and try again.');
       } finally {
         if (!cancelled) setFeaturedLoading(false);
       }
@@ -487,7 +487,7 @@ const Home = () => {
                   </button>
                 </div>
                 {metaError ? (
-                  <div className="results-count">{metaError}</div>
+                  <div className="results-count">{null}</div>
                 ) : null}
               </div>
             </form>
@@ -849,10 +849,27 @@ const Home = () => {
           />
           <div className="car-grid">
             {featuredLoading && (
-              <Spinner />
+              <div style={{ gridColumn: '5 / -5' }}>
+                <Spinner />
+              </div>
             )}
             {!featuredLoading && featuredError && (
-              <div className="results-count">{featuredError}</div>
+              <div
+                className="results-count"
+                style={{
+                  gridColumn: '1 / -1',
+                  width: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: 16,
+                  padding: '140px 0',
+                }}
+              >
+                <img src="/images/empty.png" alt="No data available" style={{ maxWidth: '200px', opacity: 0.7 }} />
+                <span>{featuredError}</span>
+              </div>
             )}
             {!featuredLoading && !featuredError && featuredCars.slice(0, 8).map((car) => (
               <CarCard key={car.uuid || car.id} car={car} />

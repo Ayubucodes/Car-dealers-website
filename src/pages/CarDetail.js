@@ -16,6 +16,7 @@ import {
   Linkedin,
   MessageCircle,
   Link as LinkIcon,
+  Car,
 } from 'lucide-react';
 import CarCard from '../components/CarCard';
 import Spinner from '../components/Spinner';
@@ -38,6 +39,8 @@ const CarDetail = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [isLikeSubmitting, setIsLikeSubmitting] = useState(false);
   const [likeError, setLikeError] = useState('');
+  const [mainImageError, setMainImageError] = useState(false);
+  const [thumbnailErrors, setThumbnailErrors] = useState({});
   const [orderForm, setOrderForm] = useState({
     user_phone: '',
     address: '',
@@ -101,6 +104,8 @@ const CarDetail = () => {
         setLoading(true);
         setError('');
         setCurrentImageIndex(0);
+        setMainImageError(false);
+        setThumbnailErrors({});
 
         const apiCar = await fetchCarByUuid(uuid);
         if (!apiCar) {
@@ -146,7 +151,7 @@ const CarDetail = () => {
         const related = await fetchRelatedCars(apiCar.make_id, apiCar.id);
         if (!cancelled) setRelatedCars(related);
       } catch (e) {
-        if (!cancelled) setError(e?.message || 'Failed to load car');
+        if (!cancelled) setError('Please check your connection and try again.');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -208,10 +213,25 @@ const CarDetail = () => {
       </div>
       <div className="container">
         {loading && (
-          <Spinner />
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+            <Spinner />
+          </div>
         )}
         {!loading && error && (
-          <div className="results-count">{error}</div>
+          <div
+            className="results-count"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 16,
+              padding: '140px 0',
+            }}
+          >
+            <img src="/images/empty.png" alt="No data available" style={{ maxWidth: '200px', opacity: 0.7 }} />
+            <span>{error}</span>
+          </div>
         )}
         {!loading && !error && car && (
           <>
@@ -220,18 +240,30 @@ const CarDetail = () => {
                 {/* Image Gallery */}
                 <div className="image-gallery">
                   <div className="main-image-container">
-                    <img src={car.images[currentImageIndex]} alt={car.name} className="main-image" />
-                    <button className="arrow-btn arrow-left" onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? car.images.length - 1 : prev - 1))}>
+                    {mainImageError ? (
+                      <div className="main-image" style={{ width: '100%', height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
+                        <Car size={80} style={{ color: '#6c757d' }} />
+                      </div>
+                    ) : (
+                      <img src={car.images[currentImageIndex]} alt={car.name} className="main-image" onError={() => setMainImageError(true)} />
+                    )}
+                    <button className="arrow-btn arrow-left" onClick={() => { setCurrentImageIndex((prev) => (prev === 0 ? car.images.length - 1 : prev - 1)); setMainImageError(false); }}>
                       <ChevronLeft size={24} />
                     </button>
-                    <button className="arrow-btn arrow-right" onClick={() => setCurrentImageIndex((prev) => (prev === car.images.length - 1 ? 0 : prev + 1))}>
+                    <button className="arrow-btn arrow-right" onClick={() => { setCurrentImageIndex((prev) => (prev === car.images.length - 1 ? 0 : prev + 1)); setMainImageError(false); }}>
                       <ChevronRight size={24} />
                     </button>
                   </div>
                   <div className="thumbnail-grid">
                     {car.images.map((img, index) => (
-                      <div key={index} className={`thumbnail ${index === currentImageIndex ? 'active' : ''}`} onClick={() => setCurrentImageIndex(index)}>
-                        <img src={img} alt={`${car.name} view ${index + 1}`} />
+                      <div key={index} className={`thumbnail ${index === currentImageIndex ? 'active' : ''}`} onClick={() => { setCurrentImageIndex(index); setMainImageError(false); }}>
+                        {thumbnailErrors[index] ? (
+                          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}>
+                            <Car size={40} style={{ color: '#6c757d' }} />
+                          </div>
+                        ) : (
+                          <img src={img} alt={`${car.name} view ${index + 1}`} onError={() => setThumbnailErrors((prev) => ({ ...prev, [index]: true }))} />
+                        )}
                       </div>
                     ))}
                   </div>
