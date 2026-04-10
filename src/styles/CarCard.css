@@ -270,10 +270,16 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
+  .car-card-list {
+    height: 180px;
+    overflow: hidden;
+  }
+
   .car-list-content {
     flex-direction: row;
-    min-height: 180px;
+    height: 180px;
     align-items: stretch;
+    overflow: hidden;
   }
 
   .car-list-image {

@@ -17,6 +17,8 @@ import {
   MessageCircle,
   Link as LinkIcon,
   Car,
+  Play,
+  X,
 } from 'lucide-react';
 import CarCard from '../components/CarCard';
 import Spinner from '../components/Spinner';
@@ -33,6 +35,7 @@ const CarDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [orderError, setOrderError] = useState('');
   const [orderSuccess, setOrderSuccess] = useState('');
   const [isOrderSubmitting, setIsOrderSubmitting] = useState(false);
@@ -95,6 +98,23 @@ const CarDetail = () => {
       document.body.style.overflow = previousOverflow;
     };
   }, [isOrderModalOpen]);
+
+  useEffect(() => {
+    if (!isVideoModalOpen) return;
+
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setIsVideoModalOpen(false);
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isVideoModalOpen]);
 
   useEffect(() => {
     let cancelled = false;
@@ -253,6 +273,10 @@ const CarDetail = () => {
                     <button className="arrow-btn arrow-right" onClick={() => { setCurrentImageIndex((prev) => (prev === car.images.length - 1 ? 0 : prev + 1)); setMainImageError(false); }}>
                       <ChevronRight size={24} />
                     </button>
+                    <div className="vehicle-video-btn" onClick={() => setIsVideoModalOpen(true)}>
+                      <Play size={16} />
+                      <span>Vehicle video</span>
+                    </div>
                   </div>
                   <div className="thumbnail-grid">
                     {car.images.map((img, index) => (
@@ -795,6 +819,31 @@ const CarDetail = () => {
           </>
         )}
       </div>
+
+      {/* Video Modal */}
+      {isVideoModalOpen && (
+        <div className="video-modal-overlay" onClick={() => setIsVideoModalOpen(false)}>
+          <div className="video-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="video-modal-header">
+              <h3>Vehicle Video</h3>
+              <button className="video-modal-close" onClick={() => setIsVideoModalOpen(false)}>
+                <X size={24} />
+              </button>
+            </div>
+            <div className="video-modal-content">
+              <video
+                controls
+                autoPlay
+                className="video-player"
+                style={{ width: '100%', height: 'auto', maxHeight: '500px' }}
+              >
+                <source src="/videos/car.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
